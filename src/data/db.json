@@ -1,0 +1,14 @@
+[{
+    "id": "1",
+    "brand": "Honda",
+    "model": "Civic",
+    "year": 2007,
+    "type": "Hatchback"
+},
+{
+    "id": "2",
+    "brand": "Mazda",
+    "model": "323F GT",
+    "year": 1990,
+    "type": "Hatchback/Coupé"
+}]
