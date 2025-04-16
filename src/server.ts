@@ -1,5 +1,4 @@
+console.log("Hello from server.ts"); // Test
 import  { app } from "./app";
-import express from "express";
 
-app.listen(3000);
-app.use(express.json());
+app.listen(8080, () => console.log("Running server on http://localhost:8080"));
