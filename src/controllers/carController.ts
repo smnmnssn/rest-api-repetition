@@ -1,20 +1,11 @@
 import { Request, Response } from "express";
 import { Car } from "../models/Car";
-
+import { loadCars } from "../data/carData";
 
 // Här lägger du funktionerna för GET, POST, PUT, DELETE.
 
-let cars: Car[] = [
-    {
-      id: "1",
-      brand: "Volvo",
-      model: "XC60",
-      year: 2020,
-      type: "SUV",
-    },
-  ];
-  
 // GET endpoint to fetch all cars in Cars 
-export const getAllCars = (req: Request, res: Response) => {
+export const getAllCars = async (req: Request, res: Response) => {
+    const cars = await loadCars();
     res.status(200).json(cars);
 }
