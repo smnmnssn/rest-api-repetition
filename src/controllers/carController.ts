@@ -62,3 +62,13 @@ export const addNewCar = async (req: Request, res: Response) => {
       .json({ message: "Something went wrong, check fields and try again" });
   }
 };
+
+// PUT endpoint för att uppdatera/ändra en bil
+export const updateCar = async (req: Request, res: Response) => {
+  try {
+    
+
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong, check fields and try again" })
+  }
+} 
