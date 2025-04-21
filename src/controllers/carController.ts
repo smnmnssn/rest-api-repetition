@@ -21,6 +21,47 @@ export const getCarById = async (req: Request, res: Response) => {
   return res.status(200).json(car);
 };
 
+//GET endpoint för att HÄMTA ALLA BILAR FRÅN SAMMA MÄRKE.
+export const getCarsByBrand = async (req: Request, res: Response) => {
+  
+  try {
+    const cars = await loadCars();
+    const { brand } = req.params;
+
+    const matchingCars = cars.filter(
+      (car) =>
+        typeof car.brand === "string" &&
+        car.brand.toLowerCase() === brand.toLowerCase()
+    );
+    
+
+    if (matchingCars.length === 0) {
+      return res.status(404).json( {message : "No cars found for this brand" })
+    }
+
+    return res.status(200).json(matchingCars);
+
+    
+    
+    
+    
+  } catch (error) {
+    console.log("Error fetching cars by brand", (error));
+    res.status(500).json( { message: "Internal server error" } )
+    
+  }
+} ;
+
+
+
+
+
+
+
+
+
+
+
 // POST endpoint för att LÄGGA TILL BIL.
 export const addNewCar = async (req: Request, res: Response) => {
   const cars = await loadCars();
