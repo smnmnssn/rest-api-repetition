@@ -19,5 +19,12 @@
     "model": "Accord",
     "year": 2007,
     "type": "Sedan"
+  },
+  {
+    "id": "1745234356397",
+    "brand": "Honda",
+    "model": "Civic CRX VTEC",
+    "year": 1990,
+    "type": "Hatchback"
   }
 ]
