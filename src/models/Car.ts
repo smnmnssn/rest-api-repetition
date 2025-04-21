@@ -13,4 +13,5 @@ export interface Car {
   price: string;
   engine: string;
   cylinders: string;
+  imageUrl: string;
 }

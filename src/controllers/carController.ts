@@ -79,6 +79,7 @@ export const addNewCar = async (req: Request, res: Response) => {
     price,
     engine,
     cylinders,
+    imageUrl
   } = req.body;
 
   try {
@@ -130,6 +131,7 @@ export const addNewCar = async (req: Request, res: Response) => {
       price,
       engine,
       cylinders,
+      imageUrl
     };
 
     cars.push(newCar);
@@ -160,6 +162,7 @@ export const updateCar = async (req: Request, res: Response) => {
     price,
     engine,
     cylinders,
+    imageUrl
   } = req.body;
 
   try {
@@ -189,7 +192,9 @@ export const updateCar = async (req: Request, res: Response) => {
       !engine ||
       typeof engine !== "string" ||
       !cylinders ||
-      typeof cylinders !== "string"
+      typeof cylinders !== "string" ||
+      !imageUrl ||
+      typeof imageUrl !== "string"
     ) {
       return res
         .status(400)
@@ -217,6 +222,7 @@ export const updateCar = async (req: Request, res: Response) => {
       price,
       engine,
       cylinders,
+      imageUrl
     };
 
     cars[index] = updatedCar;
