@@ -1,11 +1,14 @@
 import fs from "fs/promises";
 import path from "path";
-import { Car } from "../models/Car";
+import { CarType } from "../models/Car";
+
+// Database user password: rpbekZKFgMo1Semm. 
+var mongo = require('mongodb');
 
 const DB_PATH = path.join(__dirname, "db.json");
 const UNSPLASH_ACCESS_KEY = "Aag1r1viaviOvDkjZ64uGMk1cBX5Fl4LPFEbVdL7d7s";
 
-export async function loadCars(): Promise<Car[]> {
+export async function loadCars(): Promise<CarType[]> {
   try {
     const data = await fs.readFile(DB_PATH, "utf-8");
     return JSON.parse(data);
@@ -49,7 +52,7 @@ export async function loadImagesAndSave() {
 
 }
 
-export async function saveCars(cars: Car[]): Promise<void> {
+export async function saveCars(cars: CarType[]): Promise<void> {
   try {
     await fs.writeFile(DB_PATH, JSON.stringify(cars, null, 2));
   } catch (error) {

@@ -1,8 +1,10 @@
 [
   {
     "id": "e22b15dc-f6ff-49b0-a69a-821f37d34a85",
-    "brand": "Ferrari",
+    "brand": "Volvo",
     "model": "812 Superfast",
+    "yearRange": "2018 - Present",
+    "bodyType": "Coupe",
     "horsepower": "789 hp",
     "torque": "719 Nm (530 lb-ft)",
     "transmission": "7-speed automatic",
@@ -10,8 +12,6 @@
     "fuelEconomy": "18.1/11.8 L/100KM (13/20 mpg)",
     "doors": "2",
     "price": "$366,712",
-    "yearRange": "2018 - Present",
-    "bodyType": "Coupe",
     "engine": "6.5L V12",
     "cylinders": "12",
     "imageUrl": "https://images.unsplash.com/photo-1644925510146-c948c8c10aa3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDEwNzZ8MHwxfHNlYXJjaHwxfHxGZXJyYXJpJTIwODEyJTIwU3VwZXJmYXN0JTIwQ291cGV8ZW58MHwwfHx8MTc0NTI2NzYxMXww&ixlib=rb-4.0.3&q=80&w=1080"

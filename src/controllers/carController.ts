@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { loadCars, saveCars } from "../data/carData";
-import { Car } from "../models/Car";
+import { CarType } from "../models/Car";
 
 // GET endpoint för att HÄMTA ALLA BILAR.
 export const getAllCars = async (req: Request, res: Response) => {
@@ -116,7 +116,7 @@ export const addNewCar = async (req: Request, res: Response) => {
         .json({ message: "Invalid data, check all fields and try again" });
     }
 
-    const newCar: Car = {
+    const newCar: CarType = {
       id: String(Date.now()),
       brand,
       model,
@@ -207,7 +207,7 @@ export const updateCar = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Car not found!" });
     }
 
-    const updatedCar: Car = {
+    const updatedCar: CarType = {
       id,
       brand,
       model,
