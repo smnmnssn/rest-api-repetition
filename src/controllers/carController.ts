@@ -1,236 +1,70 @@
 import { Request, Response } from "express";
-import { loadCars, saveCars } from "../data/carData";
-import { CarType } from "../models/Car";
+import { Car, CarType } from "../models/Car";
+import mongoose from "mongoose";
 
 // GET endpoint för att HÄMTA ALLA BILAR.
 export const getAllCars = async (req: Request, res: Response) => {
-  const cars = await loadCars();
-  res.status(200).json(cars);
+  try {
+    const cars = await Car.find();
+    res.status(200).json(cars);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch cars" });
+  }
 };
 
 // GET endpoint för att HÄMTA SPECIFIK BIL.
 export const getCarById = async (req: Request, res: Response) => {
-  const cars = await loadCars();
-  const { id } = req.params;
-  const car = cars.find((c) => c.id === id);
+  try {
+    const car = await Car.findById(req.params.id); // OBS: direkt mot _id
 
-  if (!car) {
-    return res.status(404).json({ message: "Car not found!" });
+    if (!car) return res.status(404).json({ message: "Car not found" });
+    res.status(200).json(car);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving car" });
   }
-
-  return res.status(200).json(car);
 };
 
 //GET endpoint för att HÄMTA ALLA BILAR FRÅN SAMMA MÄRKE.
 export const getCarsByBrand = async (req: Request, res: Response) => {
-  
   try {
-    const cars = await loadCars();
-    const { brand } = req.params;
+    const cars = await Car.find({
+      brand: new RegExp(`^${req.params.brand}$`, "i"),
+    });
 
-    const matchingCars = cars.filter(
-      (car) =>
-        typeof car.brand === "string" &&
-        car.brand.toLowerCase() === brand.toLowerCase()
-    );
-    
-
-    if (matchingCars.length === 0) {
-      return res.status(404).json( {message : "No cars found for this brand" })
+    if (cars.length === 0) {
+      return res.status(404).json({ message: "No cars found for this brand" });
     }
 
-    return res.status(200).json(matchingCars);
-
-    
-    
-    
-    
+    return res.status(200).json(cars);
   } catch (error) {
-    console.log("Error fetching cars by brand", (error));
-    res.status(500).json( { message: "Internal server error" } )
-    
+    console.log("Error fetching cars by brand", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-} ;
-
-
-
-
-
-
-
-
-
-
+};
 
 // POST endpoint för att LÄGGA TILL BIL.
 export const addNewCar = async (req: Request, res: Response) => {
-  const cars = await loadCars();
-  const {
-    brand,
-    model,
-    yearRange,
-    bodyType,
-    horsepower,
-    torque,
-    transmission,
-    drivetrain,
-    fuelEconomy,
-    doors,
-    price,
-    engine,
-    cylinders,
-    imageUrl
-  } = req.body;
+  const carData: CarType = req.body;
 
   try {
-    if (
-      !brand ||
-      typeof brand !== "string" ||
-      !model ||
-      typeof model !== "string" ||
-      !yearRange ||
-      typeof yearRange !== "string" ||
-      !bodyType ||
-      typeof bodyType !== "string" ||
-      !horsepower ||
-      typeof horsepower !== "string" ||
-      !torque ||
-      typeof torque !== "string" ||
-      !transmission ||
-      typeof transmission !== "string" ||
-      !drivetrain ||
-      typeof drivetrain !== "string" ||
-      !fuelEconomy ||
-      typeof fuelEconomy !== "string" ||
-      !doors ||
-      typeof doors !== "string" ||
-      !price ||
-      typeof price !== "string" ||
-      !engine ||
-      typeof engine !== "string" ||
-      !cylinders ||
-      typeof cylinders !== "string"
-    ) {
-      return res
-        .status(400)
-        .json({ message: "Invalid data, check all fields and try again" });
-    }
-
-    const newCar: CarType = {
-      id: String(Date.now()),
-      brand,
-      model,
-      yearRange,
-      bodyType,
-      horsepower,
-      torque,
-      transmission,
-      drivetrain,
-      fuelEconomy,
-      doors,
-      price,
-      engine,
-      cylinders,
-      imageUrl
-    };
-
-    cars.push(newCar);
-    await saveCars(cars);
+    const newCar = await Car.create(carData);
     res.status(201).json(newCar);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Something went wrong, check fields and try again" });
+    res.status(400).json({ message: "Validation failed", error });
   }
 };
 
 // PUT endpoint för att UPPDATERA EN SPECIFIK BIL.
 export const updateCar = async (req: Request, res: Response) => {
-  const cars = await loadCars();
-  const { id } = req.params;
-  const {
-    brand,
-    model,
-    yearRange,
-    bodyType,
-    horsepower,
-    torque,
-    transmission,
-    drivetrain,
-    fuelEconomy,
-    doors,
-    price,
-    engine,
-    cylinders,
-    imageUrl
-  } = req.body;
-
   try {
-    if (
-      !brand ||
-      typeof brand !== "string" ||
-      !model ||
-      typeof model !== "string" ||
-      !yearRange ||
-      typeof yearRange !== "string" ||
-      !bodyType ||
-      typeof bodyType !== "string" ||
-      !horsepower ||
-      typeof horsepower !== "string" ||
-      !torque ||
-      typeof torque !== "string" ||
-      !transmission ||
-      typeof transmission !== "string" ||
-      !drivetrain ||
-      typeof drivetrain !== "string" ||
-      !fuelEconomy ||
-      typeof fuelEconomy !== "string" ||
-      !doors ||
-      typeof doors !== "string" ||
-      !price ||
-      typeof price !== "string" ||
-      !engine ||
-      typeof engine !== "string" ||
-      !cylinders ||
-      typeof cylinders !== "string" ||
-      !imageUrl ||
-      typeof imageUrl !== "string"
-    ) {
-      return res
-        .status(400)
-        .json({ message: "Invalid data, check all fields and try again" });
-    }
-
-    const index = cars.findIndex((c) => c.id === id);
-
-    if (index === -1) {
-      return res.status(404).json({ message: "Car not found!" });
-    }
-
-    const updatedCar: CarType = {
-      id,
-      brand,
-      model,
-      yearRange,
-      bodyType,
-      horsepower,
-      torque,
-      transmission,
-      drivetrain,
-      fuelEconomy,
-      doors,
-      price,
-      engine,
-      cylinders,
-      imageUrl
-    };
-
-    cars[index] = updatedCar;
-    await saveCars(cars);
-    return res.status(200).json(updatedCar);
-  } catch (error) {
-    res.status(500).json({
-      message: "Something went wrong, check fields and try again",
+    const updated = await Car.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
     });
+
+    if (!updated) return res.status(404).json({ message: "Car not found" });
+    res.status(200).json(updated);
+  } catch (error) {
+    res.status(500).json({ message: "Update failed", error });
   }
 };
+

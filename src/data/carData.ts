@@ -1,66 +1,43 @@
-import fs from "fs/promises";
 import path from "path";
-import { CarType } from "../models/Car";
+import { Car } from "../models/Car";
 
-// Database user password: rpbekZKFgMo1Semm. 
-var mongo = require('mongodb');
+// Database user password: rpbekZKFgMo1Semm.
+var mongo = require("mongodb");
 
 const DB_PATH = path.join(__dirname, "db.json");
 const UNSPLASH_ACCESS_KEY = "Aag1r1viaviOvDkjZ64uGMk1cBX5Fl4LPFEbVdL7d7s";
 
-export async function loadCars(): Promise<CarType[]> {
-  try {
-    const data = await fs.readFile(DB_PATH, "utf-8");
-    return JSON.parse(data);
-  } catch (error) {
-    console.log("Could not load cars");
-    return [];
-  }
-}
 
-export async function loadImagesAndSave() {
-  const cars = await loadCars();
-  await fs.copyFile(DB_PATH, DB_PATH.replace(".json", ".backup.json"));
+export async function loadImagesAndSaveFromMongo() {
+  const cars = await Car.find();
 
-  const updatedCars = await Promise.all(
-    cars.map(async (car, index) => {
-      if (index >= 5) return car; // Hoppa över efter 5 requests per timme
-  
+  const updated = await Promise.all(
+    cars.slice(0, 10).map(async (car) => {
       const query = `${car.brand} ${car.model} ${car.bodyType}`;
       const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
         query
       )}&orientation=landscape&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`;
-  
+
       try {
-        const response = await fetch(url);
-        const data = await response.json();
-  
-        car.imageUrl =
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const imageUrl =
           data.results?.[0]?.urls?.regular ??
           "https://via.placeholder.com/400x300?text=No+Image";
-      } catch {
+
+        car.imageUrl = imageUrl;
+        await car.save(); // 💾 spara ändring i MongoDB
+      } catch (error) {
+        console.error("Fel vid hämtning av bild:", error);
         car.imageUrl = "https://via.placeholder.com/400x300?text=Error";
+        await car.save(); // 💾 spara ändå
       }
-  
+
       return car;
     })
   );
-  
 
-  await saveCars(updatedCars);
-  console.log("Uppdaterade bilar med bilder sparade!");
-
+  console.log(`✅ Uppdaterade ${updated.length} bilar med bilder`);
 }
 
-export async function saveCars(cars: CarType[]): Promise<void> {
-  try {
-    await fs.writeFile(DB_PATH, JSON.stringify(cars, null, 2));
-  } catch (error) {
-    console.log("Failed to save cars");
-  }
-}
-
-// Testkör bara om filen körs direkt
-if (require.main === module) {
-  loadImagesAndSave();
-}
