@@ -1,12 +1,8 @@
-import path from "path";
 import { Car } from "../models/Car";
 
-// Database user password: rpbekZKFgMo1Semm.
-var mongo = require("mongodb");
+// Database user password: rpbekZKFgMo1Semm
 
-const DB_PATH = path.join(__dirname, "db.json");
 const UNSPLASH_ACCESS_KEY = "Aag1r1viaviOvDkjZ64uGMk1cBX5Fl4LPFEbVdL7d7s";
-
 
 export async function loadImagesAndSaveFromMongo() {
   const cars = await Car.find();

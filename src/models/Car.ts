@@ -18,6 +18,8 @@ export interface CarType {
   imageUrl: string;
 }
 
+
+// Database model
 const carSchema = new mongoose.Schema({
   brand: { type: String, required: true },
   model: { type: String, required: true },
