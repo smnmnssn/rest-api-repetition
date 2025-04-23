@@ -19,7 +19,7 @@ export const getCarById = async (req: Request, res: Response) => {
     if (!car) {
       return res.status(404).json({ message: "Car not found!" });
     }
-    
+
     res.status(200).json(car);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving car" });
@@ -88,3 +88,22 @@ export const updateCar = async (req: Request, res: Response) => {
   }
 };
 
+//DELETE endpoint för att RADERA/TA BORT en bil.
+export const deleteCar = async (req: Request, res: Response) => {
+  try {
+    const toBeDeleted = await Car.findByIdAndDelete(req.params.id);
+
+    if (!toBeDeleted) {
+      return res
+        .status(400)
+        .json({ message: "Could not find and delete car by that id" });
+    }
+    
+    console.log("🚀 Deleting...");
+    res
+      .status(200)
+      .json({ message: "Car deleted successfully", car: toBeDeleted });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing car" });
+  }
+};
